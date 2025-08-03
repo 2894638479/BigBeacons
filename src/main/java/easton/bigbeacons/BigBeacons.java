@@ -1,9 +1,7 @@
 package easton.bigbeacons;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.fabricmc.fabric.impl.registry.sync.packet.DirectRegistryPacketHandler;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
@@ -19,13 +17,8 @@ public class BigBeacons implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		Registry.register(Registries.STATUS_EFFECT, Identifier.of(MOD_ID, "flight"), FLIGHT);
-
-		PayloadTypeRegistry.playS2C().register(BasicPayload.ID, BasicPayload.CODEC);
-		PayloadTypeRegistry.playC2S().register(BasicPayload.ID, BasicPayload.CODEC);
-
-		ServerPlayNetworking.registerGlobalReceiver(BasicPayload.ID, (payload, context) -> {
-			((PlayerModdedDuck)context.player()).setHasMod(true);
+		ServerPlayNetworking.registerGlobalReceiver(PACKET_ID, ( mc, player,handler,buf,sender) -> {
+			((PlayerModdedDuck)player).setHasMod(true);
 		});
-
 	}
 }
