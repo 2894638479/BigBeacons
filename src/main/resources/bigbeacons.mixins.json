@@ -4,7 +4,6 @@
   "package": "easton.bigbeacons.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "StatusEffectsDisplayMixin",
     "BeaconBlockEntityMixin",
     "BeaconScreenHandlerMixin",
     "EnchantmentHelperMixin",
@@ -13,7 +12,10 @@
     "ServerPlayerEntityMixin"
   ],
   "client": [
-    "BeaconScreenMixin"
+    "BaseButtonWidgetMixin",
+    "BeaconScreenMixin",
+    "CancelButtonWidgetMixin",
+    "DoneButtonWidgetMixin"
   ],
   "injectors": {
     "defaultRequire": 1

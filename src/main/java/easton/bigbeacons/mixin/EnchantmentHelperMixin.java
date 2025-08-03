@@ -16,8 +16,8 @@ public class EnchantmentHelperMixin {
 
     // Adds luck level to looting level, kind of a weird place to do this, not totally sure looting checks are always routed through this method
     @Inject(method = "getEquipmentLevel", at = @At("RETURN"), cancellable = true)
-    private static void addLuckToLooting(RegistryEntry<Enchantment> enchantment, LivingEntity entity, CallbackInfoReturnable<Integer> cir) {
-        if (enchantment.getKey().isPresent() && enchantment.getKey().get() == Enchantments.LOOTING && entity.hasStatusEffect(StatusEffects.LUCK)) {
+    private static void addLuckToLooting(Enchantment enchantment, LivingEntity entity, CallbackInfoReturnable<Integer> cir) {
+        if (enchantment == Enchantments.LOOTING && entity.hasStatusEffect(StatusEffects.LUCK)) {
             int luckLevel = entity.getStatusEffect(StatusEffects.LUCK).getAmplifier() + 1;
             cir.setReturnValue(cir.getReturnValueI() + luckLevel);
         }

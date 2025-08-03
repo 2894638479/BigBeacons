@@ -38,13 +38,12 @@ public abstract class BeaconScreenHandlerMixin extends ScreenHandler {
 
     @ModifyArgs(
             method = "<init>(ILnet/minecraft/inventory/Inventory;Lnet/minecraft/screen/PropertyDelegate;Lnet/minecraft/screen/ScreenHandlerContext;)V",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/screen/BeaconScreenHandler;addPlayerSlots(Lnet/minecraft/inventory/Inventory;II)V")
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/screen/slot/Slot;<init>(Lnet/minecraft/inventory/Inventory;III)V")
     )
-    private void moveInventorySlots(Args args) {
-        if (userHasMod(args)) {
-            args.set(1, (int) args.get(1) + 26);
-            args.set(2, (int) args.get(2) + 7);
-        }
+    void moveInventorySlots(Args args) {
+        if(!userHasMod(args)) return;
+        args.set(2,(int)args.get(2) + 26);
+        args.set(3,(int)args.get(3) + 7);
     }
 
     @Redirect(method = "quickMove", at = @At(value = "INVOKE", target = "net/minecraft/screen/BeaconScreenHandler$PaymentSlot.hasStack()Z"))

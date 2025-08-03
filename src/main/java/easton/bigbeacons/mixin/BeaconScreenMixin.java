@@ -14,7 +14,9 @@ import net.minecraft.screen.BeaconScreenHandler;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -26,15 +28,16 @@ public abstract class BeaconScreenMixin extends HandledScreen<BeaconScreenHandle
         super(handler, inventory, title);
     }
 
-    @Redirect(
+    @Mutable
+    @Shadow @Final
+    static Identifier TEXTURE;
+
+    @Inject(
             method = "<clinit>",
-            at = @At(value = "INVOKE",
-                    target = "net/minecraft/util/Identifier.ofVanilla(Ljava/lang/String;)Lnet/minecraft/util/Identifier;",
-                    ordinal = 0
-            )
+            at = @At(value = "TAIL",ordinal = 0)
     )
-    private static Identifier showNewSprite(String vanillaId) {
-        return Identifier.of(BigBeacons.MOD_ID, "textures/gui/container/bigbeacon.png");
+    private static void showNewSprite(CallbackInfo ci) {
+        TEXTURE = Identifier.of(BigBeacons.MOD_ID, "textures/gui/container/bigbeacon.png");
     }
 
     @ModifyConstant(method = "<init>", constant = @Constant(intValue = 219))
@@ -57,7 +60,7 @@ public abstract class BeaconScreenMixin extends HandledScreen<BeaconScreenHandle
 
     @ModifyArg(
             method = "init",
-            at = @At(value = "INVOKE", ordinal = 0, target = "net/minecraft/client/gui/screen/ingame/BeaconScreen$EffectButtonWidget.<init>(Lnet/minecraft/client/gui/screen/ingame/BeaconScreen;IILnet/minecraft/registry/entry/RegistryEntry;ZI)V"),
+            at = @At(value = "INVOKE", ordinal = 0, target = "net/minecraft/client/gui/screen/ingame/BeaconScreen$EffectButtonWidget.<init>(Lnet/minecraft/client/gui/screen/ingame/BeaconScreen;IILnet/minecraft/entity/effect/StatusEffect;ZI)V"),
             index = 1
     )
     private int realignEffectButtons(int curr) {
@@ -79,7 +82,7 @@ public abstract class BeaconScreenMixin extends HandledScreen<BeaconScreenHandle
             method = "init",
             at = @At(
                     value = "INVOKE",
-                    target = "net/minecraft/client/gui/screen/ingame/BeaconScreen$EffectButtonWidget.<init>(Lnet/minecraft/client/gui/screen/ingame/BeaconScreen;IILnet/minecraft/registry/entry/RegistryEntry;ZI)V",
+                    target = "net/minecraft/client/gui/screen/ingame/BeaconScreen$EffectButtonWidget.<init>(Lnet/minecraft/client/gui/screen/ingame/BeaconScreen;IILnet/minecraft/entity/effect/StatusEffect;ZI)V",
                     ordinal = 0
             ),
             index = 5
@@ -94,16 +97,16 @@ public abstract class BeaconScreenMixin extends HandledScreen<BeaconScreenHandle
     private <T extends ClickableWidget> void addButton(T button) {}
 
     @Shadow
-    RegistryEntry<StatusEffect> primaryEffect;
+    StatusEffect primaryEffect;
 
     // just made an anonymous class instead of LevelThreeEffectButtonWidget
     @Inject(method = "init", at = @At("TAIL"))
     private void addLevelThreeButton(CallbackInfo ci) {
-        BeaconScreen.EffectButtonWidget effectButtonWidget = ((BeaconScreen)(Object)this).new EffectButtonWidget(this.x + 157, this.y + 100, BeaconBlockEntity.EFFECTS_BY_LEVEL.get(0).get(0), false, 9) {
+        BeaconScreen.EffectButtonWidget effectButtonWidget = ((BeaconScreen)(Object)this).new EffectButtonWidget(this.x + 157, this.y + 100, BeaconBlockEntity.EFFECTS_BY_LEVEL[0][0], false, 9) {
 
             @Override
-            protected MutableText getEffectName(RegistryEntry<StatusEffect> effect) {
-                return Text.translatable(effect.value().getTranslationKey()).append(" III");
+            protected MutableText getEffectName(StatusEffect statusEffect) {
+                return Text.translatable(statusEffect.getTranslationKey()).append(" III");
             }
 
             @Override

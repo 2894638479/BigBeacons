@@ -1,3 +1,12 @@
 accessWidener v2 named
 accessible   class   net/minecraft/screen/BeaconScreenHandler$PaymentSlot
+accessible class net/minecraft/client/gui/screen/ingame/BeaconScreen$BaseButtonWidget
+accessible class net/minecraft/client/gui/screen/ingame/BeaconScreen$DoneButtonWidget
+accessible class net/minecraft/client/gui/screen/ingame/BeaconScreen$CancelButtonWidget
 extendable   class   net/minecraft/client/gui/screen/ingame/BeaconScreen$EffectButtonWidget
+
+mutable field net/minecraft/screen/slot/Slot x I
+mutable field net/minecraft/screen/slot/Slot y I
+accessible field net/minecraft/screen/slot/Slot index I
+mutable field net/minecraft/screen/slot/Slot index I
+mutable field net/minecraft/screen/slot/Slot inventory Lnet/minecraft/inventory/Inventory;
